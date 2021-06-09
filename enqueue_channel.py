@@ -38,14 +38,16 @@ def enqueue_channel(chan):
         return False
 
     q = Queue('get_tmp_table', connection=r)
-    job = q.enqueue('get_tmp_table.get_tmp_table', chan[1]+"_tmp", "*")
-    # mb here bug
+    job = q.enqueue('get_tmp_table.get_tmp_table', chan[1]+"_tmp", "data")
+    await_job(job)
     vids_to_parse = job.result
+    print(vids_to_parse, "VIDS")
     if vids_to_parse != () and vids_to_parse:
         for vid in vids_to_parse:
-            print("+job", vid)
-        #    q = Queue('enqueue_video', connection=r)
-        #    job = q.enqueue('enqueue_video.enqueue_video', vid[0])
+            print("+job", vid[0])
+            q = Queue('enqueue_video', connection=r)
+            job = q.enqueue('enqueue_video.enqueue_video', vid[0])
+            time.sleep(50000) # for test
     else:
         return False
     q = Queue('delete_tmp_table', connection=r)
