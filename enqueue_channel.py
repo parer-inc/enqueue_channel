@@ -7,6 +7,7 @@ from methods.connection import get_redis, await_job
 
 r = get_redis()
 
+
 def enqueue_channel(chan):
     """Enqueues channel to parse"""
     result = False
@@ -28,11 +29,12 @@ def enqueue_channel(chan):
     print("Done parsing in enqeueu", result)
     if result:
         if chan_type == "new":
+            print("wrote new!")
             q = Queue('write_channels', connection=r)
-            job = q.enqueue('write_channels.write_channels', result)
+            job = q.enqueue('write_channels.write_channels', [result])
         else:
             q = Queue('update_channels', connection=r)
-            job = q.enqueue('update_channels.update_channels', result)
+            job = q.enqueue('update_channels.update_channels', [result])
     else:
         # LOG
         return False
