@@ -45,17 +45,16 @@ def enqueue_channel(chan):
     vids_to_parse = job.result
     if vids_to_parse != () and vids_to_parse:
         for vid in vids_to_parse:
-            print("+job", vid[0])
             q = Queue('enqueue_video', connection=r)
             q.enqueue('enqueue_video.enqueue_video', vid[0], chan[1])
-            # time.sleep(50000) # for test
     else:
         return False
-    q = Queue('delete_tmp_table', connection=r)
-    job = q.enqueue('delete_tmp_table.delete_tmp_table', chan[1]+"_tmp")
+    # q = Queue('delete_tmp_table', connection=r)
+    # job = q.enqueue('delete_tmp_table.delete_tmp_table', chan[1]+"_tmp")
     q = Queue('delete_task', connection=r)
     job = q.enqueue('delete_task.delete_task', chan[0])
     return True
+
 
 if __name__ == '__main__':
     q = Queue('enqueue_channel', connection=r)
